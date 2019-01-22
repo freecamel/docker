@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+  db:
+    # probably need to set up external volume
+    image: postgres:10
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=securityx
+    ports:
+      - "127.0.0.1:5432:5432" 
+  securityx.service: 
+    restart: always
+    hostname: securityx.service
+    # build: .
+    image: "registry.gitlab.com/dtonomy/dtonomy:securityx_columbia2"
+    environment:
+      - NODE_ENV=production
+    build: .
+    ports:
+      - "4200:4200"
+      - "3001:3001"
+      - "1880:1880"
+    # volumes:
+    #   - .:/usr/src/app 
+    depends_on:
+      - db
